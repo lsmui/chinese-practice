@@ -1,5 +1,5 @@
 /* ── Design tokens ────────────────────────────────────────── */
-:root { --brand: var(--brand); }
+:root { --brand: #1a1a2e; }
 
 /* ── Reset & base ─────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
