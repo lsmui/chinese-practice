@@ -1,0 +1,508 @@
+/* ── Reset & base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  background: #f5f4f0;
+  color: #1a1a2e;
+}
+
+/* ── Layout ───────────────────────────────────────────────── */
+#app { display: flex; height: 100vh; }
+
+#sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: #1a1a2e;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.sidebar-header {
+  padding: 20px 16px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
+
+.filter-bar {
+  padding: 10px 12px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.filter-btn {
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.filter-btn:hover  { background: rgba(255,255,255,0.08); color: #fff; }
+.filter-btn.active { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.3); }
+.filter-btn:disabled { opacity: 0.25; cursor: default; }
+
+.lesson-list { flex: 1; overflow-y: auto; padding: 6px 0; }
+
+.lesson-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background 0.12s;
+}
+.lesson-item:hover  { background: rgba(255,255,255,0.05); }
+.lesson-item.active { background: rgba(255,255,255,0.08); border-left-color: rgba(255,255,255,0.35); }
+
+.lesson-item-top { display: flex; align-items: flex-start; gap: 8px; }
+
+.lesson-item-title {
+  font-size: 14px;
+  color: rgba(255,255,255,0.88);
+  flex: 1;
+  line-height: 1.35;
+}
+
+.lesson-item-meta {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  display: flex;
+  gap: 8px;
+}
+
+.type-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Main area ─────────────────────────────────────────────── */
+#main {
+  margin-left: 260px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: #f5f4f0;
+}
+
+.main-header {
+  padding: 18px 24px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  flex-shrink: 0;
+}
+
+.main-lesson-title { font-size: 20px; font-weight: 600; line-height: 1.2; }
+
+.back-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #444;
+  padding: 2px 6px 2px 0;
+  flex-shrink: 0;
+}
+
+/* ── Tab bar ───────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  padding: 14px 24px 0;
+  border-bottom: 1px solid #e8e8e8;
+  background: #f5f4f0;
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: #999;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.tab-btn:hover  { color: #333; }
+.tab-btn.active { color: #1a1a2e; border-bottom-color: #1a1a2e; font-weight: 500; }
+
+/* ── Tab content ──────────────────────────────────────────── */
+.tab-content { flex: 1; overflow-y: auto; padding: 24px; }
+
+.empty-state {
+  padding: 56px 0;
+  text-align: center;
+  color: #bbb;
+  font-size: 14px;
+}
+
+.no-lesson {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #bbb;
+  font-size: 15px;
+}
+
+/* ── Vocab sub-tabs ───────────────────────────────────────── */
+.subtab-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.subtab-btn {
+  padding: 5px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  background: #fff;
+  font-size: 13px;
+  color: #999;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.subtab-btn:hover  { border-color: #bbb; color: #555; }
+.subtab-btn.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+
+/* ── Card list (single column) ─────────────────────────────── */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Expandable card ───────────────────────────────────────── */
+.expandable-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.expandable-card-body {
+  padding: 16px 18px;
+}
+
+.cant-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 18px;
+  border-top: 1px solid #f0f0f0;
+  cursor: pointer;
+  user-select: none;
+}
+.cant-toggle-row:hover { background: #fafafa; }
+
+.cant-toggle-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #999;
+}
+
+.cant-chevron {
+  color: #bbb;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.cant-chevron.open { transform: rotate(180deg); }
+
+.cant-expand-content {
+  padding: 14px 18px 16px;
+  border-top: 1px solid #f0f0f0;
+  background: #f8f8f8;
+}
+
+/* Vocab card */
+.vc-hanzi      { font-size: 26px; font-weight: 600; margin-bottom: 5px; line-height: 1.2; }
+.vc-pinyin     { font-size: 13px; color: #999; margin-bottom: 8px; }
+.vc-english    { font-size: 14px; color: #555; margin-bottom: 10px; }
+.vc-example    { font-size: 14px; color: #333; line-height: 1.6; margin-bottom: 4px; }
+.vc-usage-note { font-size: 12px; color: #999; font-style: italic; }
+
+/* Cantonese expanded content */
+.cant-char     { font-size: 18px; font-weight: 600; margin-bottom: 2px; line-height: 1.3; }
+.cant-jyutping { font-size: 12px; color: #999; margin-bottom: 8px; }
+.cant-example  { font-size: 13px; color: #555; line-height: 1.55; margin-bottom: 6px; }
+.cant-note     { font-size: 12px; color: #999; font-style: italic; }
+
+/* ── Flashcard tab ─────────────────────────────────────────── */
+.flashcard-wrap { max-width: 480px; margin: 0 auto; }
+
+.fc-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.fc-direction-toggle {
+  display: flex;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fc-dir-btn {
+  padding: 6px 14px;
+  border: none;
+  background: #fff;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.fc-dir-btn.active { background: #1a1a2e; color: #fff; }
+
+.fc-progress-text { font-size: 13px; color: #999; }
+
+.fc-progress-bar {
+  height: 3px;
+  background: #ebebeb;
+  border-radius: 2px;
+  margin-bottom: 22px;
+}
+
+.fc-progress-fill {
+  height: 100%;
+  background: #1a1a2e;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.fc-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  background: #fff;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 32px 24px;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.fc-card-main  { font-size: 30px; font-weight: 600; line-height: 1.2; }
+.fc-card-sub   { font-size: 15px; color: #888; }
+.fc-card-hint  { font-size: 12px; color: #ccc; }
+.fc-answer     { font-size: 20px; color: #333; }
+
+.fc-buttons { display: flex; gap: 12px; }
+
+.fc-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #e8e8e8;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: filter 0.12s;
+}
+.fc-btn-got    { background: #f0faf5; border-color: #a8d8b8; color: #2d7a4a; }
+.fc-btn-review { background: #fff9f0; border-color: #f0d0a0; color: #8a5a18; }
+.fc-btn:hover  { filter: brightness(0.96); }
+
+.fc-complete { text-align: center; padding: 48px 0; }
+.fc-complete h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: #1a1a2e; }
+.fc-complete p  { font-size: 14px; color: #999; margin-bottom: 24px; }
+
+.fc-restart-btn {
+  padding: 10px 24px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  color: #444;
+  transition: background 0.12s;
+}
+.fc-restart-btn:hover { background: #f5f5f5; }
+
+/* ── Grammar tab ───────────────────────────────────────────── */
+.grammar-list { display: flex; flex-direction: column; gap: 12px; }
+
+.grammar-card { min-height: 110px; }
+
+.gc-pattern { font-size: 19px; font-weight: 600; margin-bottom: 4px; letter-spacing: 0.02em; }
+.gc-type    { font-size: 12px; color: #999; margin-bottom: 10px; }
+.gc-example { font-size: 14px; color: #444; line-height: 1.6; }
+
+/* Divergence badges */
+.div-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 9px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.div-close     { background: #eaf7ee; color: #2a7a45; }
+.div-different { background: #fef8e8; color: #8a5e10; }
+.div-note      { background: #f2eeff; color: #5c3da0; }
+
+/* ── Discussion tab ────────────────────────────────────────── */
+.discussion-list { display: flex; flex-direction: column; gap: 14px; }
+
+.prompt-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+
+.prompt-num     { font-size: 11px; color: #ccc; margin-bottom: 4px; }
+.prompt-chinese { font-size: 17px; font-weight: 500; margin-bottom: 5px; line-height: 1.4; }
+.prompt-english { font-size: 13px; color: #999; margin-bottom: 12px; }
+
+.prompt-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+.tag {
+  font-size: 12px;
+  padding: 2px 9px;
+  border-radius: 3px;
+  background: #f2f2f2;
+  color: #666;
+  border: 1px solid #e5e5e5;
+}
+
+.tag-grammar {
+  border: 1px dashed #ccc;
+  background: transparent;
+  color: #777;
+}
+
+.prompt-answer {
+  margin-top: 10px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 10px;
+}
+
+.prompt-answer summary {
+  font-size: 12px;
+  color: #bbb;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.prompt-answer summary::-webkit-details-marker { display: none; }
+.prompt-answer summary::before       { content: '▶  '; font-size: 9px; }
+.prompt-answer[open] summary::before { content: '▼  '; }
+
+.prompt-answer-text {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.65;
+  margin-top: 10px;
+}
+
+/* ── Bottom nav (mobile) ───────────────────────────────────── */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  background: #fff;
+  border-top: 1px solid #e8e8e8;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 200;
+}
+
+.bottom-nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: none;
+  background: none;
+  font-size: 10px;
+  color: #bbb;
+  cursor: pointer;
+  padding: 6px 0;
+  height: 100%;
+  transition: color 0.12s;
+}
+.bottom-nav-btn.active { color: #1a1a2e; }
+.bottom-nav-icon { font-size: 19px; line-height: 1; }
+
+/* ── Responsive (mobile ≤767px) ────────────────────────────── */
+@media (max-width: 767px) {
+  #sidebar {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+    transition: transform 0.25s ease;
+  }
+
+  #main {
+    margin-left: 0;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    bottom: 56px;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    background: #f5f4f0;
+  }
+
+  body.lesson-open #sidebar { transform: translateX(-100%); }
+  body.lesson-open #main    { transform: translateX(0); }
+
+  .bottom-nav { display: flex; }
+  .tab-bar    { display: none; }
+  .back-btn   { display: block; }
+
+  .tab-content    { padding: 16px; }
+  .main-header    { padding: 12px 16px 0; }
+  .flashcard-wrap { max-width: 100%; }
+}
