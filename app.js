@@ -239,7 +239,10 @@ function buildVocabCard(word) {
   card.appendChild(body);
 
   if (word.cantoneseChar) {
+    const badgeCls   = 'div-badge ' + (BADGE_CLASS[word.divergence] || 'div-close');
+    const badgeLabel = BADGE_LABEL[word.divergence] || '≈ close';
     const [toggle, content] = buildCantoneseToggle(c => {
+      c.appendChild(el('span', badgeCls,        badgeLabel));
       c.appendChild(el('div', 'cant-char',     word.cantoneseChar));
       c.appendChild(el('div', 'cant-jyutping', word.jyutping));
       if (word.cantoneseExample) c.appendChild(el('div', 'cant-example', word.cantoneseExample));
@@ -319,7 +322,6 @@ function renderFlashcards(lesson, container) {
   if (!fc.flipped) {
     if (fc.direction === 'zh-en') {
       card.appendChild(el('div', 'fc-card-main', word.hanzi));
-      card.appendChild(el('div', 'fc-card-sub',  word.pinyin));
     } else {
       card.appendChild(el('div', 'fc-card-main', word.english));
     }
@@ -331,6 +333,7 @@ function renderFlashcards(lesson, container) {
   } else {
     if (fc.direction === 'zh-en') {
       card.appendChild(el('div', 'fc-card-main', word.hanzi));
+      card.appendChild(el('div', 'fc-card-sub',  word.pinyin));
       card.appendChild(el('div', 'fc-answer',    word.english));
     } else {
       card.appendChild(el('div', 'fc-card-main', word.english));

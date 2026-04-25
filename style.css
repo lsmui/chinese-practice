@@ -467,6 +467,7 @@ html, body {
     position: fixed;
     top: 0; left: 0; right: 0;
     bottom: 56px;
+    height: auto;
     transform: translateX(100%);
     transition: transform 0.25s ease;
     background: #f5f4f0;
